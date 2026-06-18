@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>엄마의 그림, 마음을 읽는 시간 | 강남데시앙포레 어린이집 부모교육</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #fefcf9;
+      color: #2c2c2c;
+      line-height: 1.8;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(254, 252, 249, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #e8e0d5;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+    .nav-brand {
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+      margin-right: auto;
+      white-space: nowrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: #555;
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    nav a:hover { background: #f0ebe5; color: #2c2c2c; }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #f0ebe5;
+      color: #7a6a5a;
+      font-size: 13px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    .hero > p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 28px;
+      line-height: 1.9;
+    }
+    .warning-box {
+      background: #fff8f0;
+      border: 1px solid #f0dcc8;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #6b5542;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #4a7c59;
+      color: white;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .cta-btn:hover { background: #3d6a4a; transform: translateY(-1px); }
+
+    /* ── Layout ── */
+    .section-wrap { padding: 64px 24px; }
+    .section-wrap.alt { background: #f9f6f2; }
+    .section-inner { max-width: 780px; margin: 0 auto; }
+
+    .section-num {
+      font-size: 12px;
+      color: #aaa;
+      font-weight: 500;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-size: clamp(19px, 3vw, 25px);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+    .section-desc {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 28px;
+      line-height: 1.9;
+    }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e8e0d5;
+      border-radius: 16px;
+      padding: 24px 20px;
+    }
+    .card-emoji { font-size: 30px; margin-bottom: 12px; }
+    .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+    /* ── Upload Zone ── */
+    .upload-zone {
+      border: 2px dashed #c8bfb5;
+      border-radius: 20px;
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      border-color: #4a7c59;
+      background: #f5f9f6;
+    }
+    .upload-zone .upload-icon { font-size: 48px; margin-bottom: 16px; }
+    .upload-zone > p { color: #666; font-size: 15px; }
+    .upload-zone .hint { font-size: 13px; color: #aaa; margin-top: 6px; }
+
+    #fileInput { display: none; }
+
+    .btn-green {
+      display: inline-block;
+      background: #4a7c59;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+    .btn-green:hover { background: #3d6a4a; }
+    .btn-green:disabled { background: #b5cbbf; cursor: not-allowed; }
+
+    /* ── Preview ── */
+    .preview-area { display: none; margin-top: 28px; text-align: center; }
+    .preview-area img {
+      max-width: 100%;
+      max-height: 380px;
+      border-radius: 14px;
+      border: 1px solid #e8e0d5;
+      display: block;
+      margin: 0 auto 20px;
+    }
+    .analyze-btn {
+      display: block;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+      background: #4a7c59;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.2s;
+    }
+    .analyze-btn:hover { background: #3d6a4a; transform: translateY(-1px); }
+    .analyze-btn:disabled { background: #b5cbbf; cursor: not-allowed; transform: none; }
+    .reupload-btn {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #c8bfb5;
+      color: #888;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    .reupload-btn:hover { border-color: #999; color: #555; }
+
+    /* ── Loading ── */
+    .loading { display: none; text-align: center; padding: 40px 0; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e8e0d5;
+      border-top-color: #4a7c59;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: #888; font-size: 14px; }
+
+    /* ── Result ── */
+    .result-area {
+      display: none;
+      background: white;
+      border: 1px solid #d8e8dd;
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 28px;
+    }
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #eef5f0;
+    }
+    .result-header .icon { font-size: 28px; }
+    .result-header h3 { font-size: 17px; font-weight: 700; color: #2c5c3a; }
+    .result-content {
+      font-size: 15px;
+      line-height: 2;
+      color: #444;
+      white-space: pre-wrap;
+    }
+    .result-disclaimer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #eef5f0;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.7;
+    }
+
+    /* ── Caution ── */
+    .caution-list { display: grid; gap: 14px; margin-top: 24px; }
+    .caution-item {
+      background: white;
+      border: 1px solid #e8e0d5;
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+    .caution-item h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .caution-item p { font-size: 14px; color: #666; line-height: 1.8; }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid #ece7e0; padding: 22px 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: #333; }
+    .faq-a { font-size: 14px; color: #666; line-height: 1.8; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 13px;
+      color: #bbb;
+      border-top: 1px solid #e8e0d5;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 560px) {
+      .nav-brand { font-size: 12px; }
+      nav a { font-size: 12px; padding: 4px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-brand">🍎 강남데시앙포레 어린이집</span>
+    <a href="#about">검사 소개</a>
+    <a href="#upload">그림 업로드</a>
+    <a href="#caution">꼭 기억해요</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-badge">PPAT 그림심리분석 · 부모교육 특별 프로그램</span>
+    <h1>엄마의 그림도,<br>마음이 건네는 다정한 편지입니다</h1>
+    <p>아이에게만 그림이 마음을 보여주는 건 아니에요.<br>
+    오늘은 <strong>엄마 자신의 그림</strong>을 통해 내 안의 에너지와<br>
+    감정의 흐름을 함께 들여다볼 시간입니다.</p>
+    <div class="warning-box">
+      ⚠️ 이 페이지는 그림에 점수를 매기거나 엄마를 어떤 유형으로 진단하지 않습니다.<br>
+      그림을 통해 자신의 마음을 돌아보고, 나에게 건넬 대화를 준비하는 <strong>관찰과 성찰의 도구</strong>입니다.
+    </div>
+    <a href="#upload" class="cta-btn">지금 그림 업로드하기 ↓</a>
+  </div>
+
+  <!-- 01 About -->
+  <div class="section-wrap alt">
+    <div class="section-inner" id="about">
+      <div class="section-num">01</div>
+      <h2 class="section-title">PPAT 그림검사란 무엇인가요?</h2>
+      <p class="section-desc">
+        사과나무에서 사과 따는 사람 그림검사(Person Picking an Apple from a Tree, PPAT)는
+        미술치료 현장에서 오랫동안 활용되어 온 그림 검사입니다.
+        가만히 멈춰 있는 대상이 아니라 <strong>'목표(사과)를 향해 움직이는 사람'</strong>을 그리게 함으로써,
+        지금 내가 현실의 문제를 마주하는 방식과 마음의 에너지를 입체적으로 들여다볼 수 있어요.
+      </p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-emoji">🌳</div>
+          <h3>나무 — 심리적 기반</h3>
+          <p>나무는 내가 스스로를 어떻게 바라보고, 삶의 기반을 얼마나 단단하게 느끼는지를 보여줄 수 있어요.</p>
+        </div>
+        <div class="card">
+          <div class="card-emoji">🍎</div>
+          <h3>사과 — 목표와 소망</h3>
+          <p>사과는 내가 이루고 싶은 일이나 마음속 소망의 크기를 상징적으로 나타낼 수 있어요.</p>
+        </div>
+        <div class="card">
+          <div class="card-emoji">🙋</div>
+          <h3>사람 — 문제해결 방식</h3>
+          <p>사과를 따는 사람의 자세와 행동은, 목표 앞에서 내가 어떻게 움직이고 애쓰는지를 보여줄 수 있어요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 How to draw -->
+  <div class="section-wrap">
+    <div class="section-inner" id="how">
+      <div class="section-num">02</div>
+      <h2 class="section-title">이렇게 그려보세요</h2>
+      <p class="section-desc">업로드 전에 직접 그림을 그려보시면 더 의미 있는 시간이 됩니다. 잘 그리려 하지 말고, 손이 가는 대로 편하게 그려주세요.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-emoji">🖍️</div>
+          <h3>준비물</h3>
+          <p>A4 용지 또는 도화지, 크레파스·색연필·마커 중 원하는 것, 약 10분의 시간</p>
+        </div>
+        <div class="card">
+          <div class="card-emoji">✏️</div>
+          <h3>주제</h3>
+          <p><strong>"사과나무에서 사과를 따는 사람"</strong>을 자유롭게 그려주세요. 비례나 구도는 중요하지 않아요.</p>
+        </div>
+        <div class="card">
+          <div class="card-emoji">💡</div>
+          <h3>팁</h3>
+          <p>너무 오래 생각하지 마세요. 처음 머릿속에 떠오른 장면을 그대로 그리는 것이 가장 솔직한 그림이에요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Upload -->
+  <div class="section-wrap alt">
+    <div class="section-inner" id="upload">
+      <div class="section-num">03</div>
+      <h2 class="section-title">그림을 업로드해보세요</h2>
+      <p class="section-desc">그린 그림을 사진으로 찍거나 스캔해서 올려주세요. AI가 따뜻한 시선으로 그림을 읽어드릴게요.</p>
+
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">🖼️</div>
+        <p>여기에 그림 파일을 드래그하거나</p>
+        <p class="hint">JPG, JPEG, PNG 지원</p>
+        <button class="btn-green" onclick="document.getElementById('fileInput').click()">파일 선택하기</button>
+        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+      </div>
+
+      <div class="preview-area" id="previewArea">
+        <img id="previewImg" src="" alt="업로드된 그림">
+        <button class="analyze-btn" id="analyzeBtn" onclick="analyzeImage()">🔍 내 그림 분석하기</button>
+        <br>
+        <button class="reupload-btn" onclick="resetUpload()">다시 올리기</button>
+      </div>
+
+      <div class="loading" id="loadingArea">
+        <div class="spinner"></div>
+        <p>그림을 따뜻한 시선으로 읽고 있어요...</p>
+      </div>
+
+      <div class="result-area" id="resultArea">
+        <div class="result-header">
+          <span class="icon">🌿</span>
+          <h3>그림이 건네는 이야기</h3>
+        </div>
+        <div class="result-content" id="resultContent"></div>
+        <div class="result-disclaimer">
+          이 분석은 AI가 생성한 참고 자료로, 전문적인 심리 진단을 대체하지 않습니다.
+          더 깊은 이야기가 필요하시면 전문 상담사 또는 담임 선생님께 편하게 문의해 주세요.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Caution -->
+  <div class="section-wrap">
+    <div class="section-inner" id="caution">
+      <div class="section-num">04</div>
+      <h2 class="section-title">꼭 기억해주세요</h2>
+      <p class="section-desc">분석 결과를 읽기 전에, 이 세 가지를 마음에 담아주세요.</p>
+      <div class="caution-list">
+        <div class="caution-item">
+          <h3>1. 한 장의 그림으로 단정 짓지 않기</h3>
+          <p>그림은 그날의 기분, 날씨, 직전 상황에 따라 얼마든지 달라질 수 있어요. 오늘 그린 한 장이 나의 마음 전부를 보여주는 것은 아닙니다.</p>
+        </div>
+        <div class="caution-item">
+          <h3>2. 그림 실력을 채점하지 않기</h3>
+          <p>얼마나 잘 그렸는지보다, 얼마나 자유롭게 선을 긋고 그 과정에 몰입했는지가 훨씬 더 소중한 부분이에요.</p>
+        </div>
+        <div class="caution-item">
+          <h3>3. AI 분석은 대화의 시작점으로</h3>
+          <p>AI는 그림의 특징을 읽는 보조 도구입니다. 전문 미술치료사나 심리상담사의 해석을 대신하지 않아요. 결과를 자신을 판단하는 잣대가 아니라, "나는 지금 이런 마음이구나"라고 공감하는 계기로 활용해 주세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 FAQ -->
+  <div class="section-wrap alt">
+    <div class="section-inner" id="faq">
+      <div class="section-num">05</div>
+      <h2 class="section-title">자주 묻는 질문</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">그림을 잘 못 그려도 괜찮을까요?</div>
+        <div class="faq-a">물론이에요. PPAT 검사에서 그림 실력은 중요하지 않아요. 막대기로 그린 사람이어도 충분합니다. 어떻게 표현했는지가 아니라, 무엇을 표현하려 했는지가 중요해요.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">업로드한 그림은 저장되나요?</div>
+        <div class="faq-a">업로드된 그림은 분석 목적으로만 사용되며, 서버에 저장되지 않습니다. 분석이 완료되면 이미지는 즉시 폐기됩니다.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">결과가 불안하게 느껴지면요?</div>
+        <div class="faq-a">AI 분석은 그림의 특징을 읽는 참고 자료일 뿐이에요. 결과가 걱정스럽다면 담임 선생님이나 전문 상담사에게 편하게 이야기 나눠보세요. 이 사이트의 결과 하나로 자신을 판단하지 말아 주세요.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">어떤 도구로 그려도 되나요?</div>
+        <div class="faq-a">크레파스, 색연필, 수채화, 사인펜, 연필 등 어떤 도구든 괜찮아요. 색이 있는 도구로 그리면 색채 분석까지 함께 이루어진답니다.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">더 자세한 상담이 필요하면 어떻게 해야 하나요?</div>
+        <div class="faq-a">이 페이지의 내용은 자기 성찰을 돕기 위한 참고 자료이며, 전문적인 진단을 대신하지 않습니다. 더 깊은 이야기가 필요하시면 강남데시앙포레 어린이집 담임 선생님 또는 원 행정실로 편하게 문의해 주세요.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    강남데시앙포레 어린이집의 부모교육 자료를 바탕으로 만든 <strong>관찰·성찰 보조 도구</strong>이며,<br>
+    의학적·심리학적 진단을 제공하지 않습니다. 그림을 통한 해석은 항상 따뜻한 대화의 시작점으로만 활용해 주세요.
+  </footer>
+
+  <script>
+    const uploadZone  = document.getElementById('uploadZone');
+    const fileInput   = document.getElementById('fileInput');
+    const previewArea = document.getElementById('previewArea');
+    const previewImg  = document.getElementById('previewImg');
+    const loadingArea = document.getElementById('loadingArea');
+    const resultArea  = document.getElementById('resultArea');
+    const resultContent = document.getElementById('resultContent');
+    const analyzeBtn  = document.getElementById('analyzeBtn');
+
+    let currentFile = null;
+
+    // Drag-and-drop
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    // Click-to-upload
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file.type.match(/image\/(jpeg|png)/)) {
+        alert('JPG, JPEG, PNG 파일만 업로드 가능합니다.');
+        return;
+      }
+      currentFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImg.src = e.target.result;
+        uploadZone.style.display = 'none';
+        previewArea.style.display = 'block';
+        resultArea.style.display = 'none';
+        loadingArea.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetUpload() {
+      currentFile = null;
+      fileInput.value = '';
+      previewImg.src = '';
+      uploadZone.style.display = 'block';
+      previewArea.style.display = 'none';
+      resultArea.style.display = 'none';
+      loadingArea.style.display = 'none';
+    }
+
+    async function analyzeImage() {
+      if (!currentFile) return;
+
+      analyzeBtn.disabled = true;
+      loadingArea.style.display = 'block';
+      resultArea.style.display = 'none';
+
+      try {
+        const base64 = await fileToBase64(currentFile);
+
+        const response = await fetch('/.netlify/functions/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageBase64: base64,
+            mediaType: currentFile.type,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || '분석 실패');
+
+        loadingArea.style.display = 'none';
+        resultContent.textContent = data.analysis;
+        resultArea.style.display = 'block';
+        resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        loadingArea.style.display = 'none';
+        alert('분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n' + err.message);
+        console.error(err);
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+</body>
+</html>
