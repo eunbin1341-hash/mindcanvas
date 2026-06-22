@@ -1,5 +1,3 @@
-const Anthropic = require('@anthropic-ai/sdk');
-
 const HEADERS = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -32,7 +30,8 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
     return {
       statusCode: 500,
       headers: HEADERS,
@@ -52,36 +51,49 @@ exports.handler = async (event) => {
   }
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    const message = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: imageBase64,
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                inline_data: {
+                  mime_type: mediaType,
+                  data: imageBase64,
+                },
               },
-            },
-            { type: 'text', text: PROMPT },
-          ],
+              { text: PROMPT },
+            ],
+          },
+        ],
+        generationConfig: {
+          maxOutputTokens: 1200,
+          temperature: 0.7,
         },
-      ],
+      }),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Gemini API error:', JSON.stringify(data));
+      throw new Error(data.error?.message || 'Gemini API 오류');
+    }
+
+    const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!analysis) throw new Error('분석 결과를 가져올 수 없습니다.');
 
     return {
       statusCode: 200,
       headers: HEADERS,
-      body: JSON.stringify({ analysis: message.content[0].text }),
+      body: JSON.stringify({ analysis }),
     };
   } catch (error) {
-    console.error('Anthropic API error:', error);
+    console.error('Error:', error);
     return {
       statusCode: 500,
       headers: HEADERS,
