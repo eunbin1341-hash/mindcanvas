@@ -1,3 +1,5 @@
+const Anthropic = require('@anthropic-ai/sdk');
+
 const HEADERS = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -30,13 +32,11 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error('GEMINI_API_KEY is not set');
+  if (!process.env.ANTHROPIC_API_KEY) {
     return {
       statusCode: 500,
       headers: HEADERS,
-      body: JSON.stringify({ error: 'API 키가 설정되지 않았습니다. Netlify 환경변수를 확인해주세요.' }),
+      body: JSON.stringify({ error: 'API 키가 설정되지 않았습니다.' }),
     };
   }
 
@@ -51,54 +51,37 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: '이미지 데이터가 없습니다.' }) };
   }
 
-  if (!['image/jpeg', 'image/png'].includes(mediaType)) {
-    return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'JPG 또는 PNG 파일만 지원합니다.' }) };
-  }
-
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                inline_data: {
-                  mime_type: mediaType,
-                  data: imageBase64,
-                },
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1200,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: mediaType,
+                data: imageBase64,
               },
-              { text: PROMPT },
-            ],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 1200,
-          temperature: 0.7,
+            },
+            { type: 'text', text: PROMPT },
+          ],
         },
-      }),
+      ],
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Gemini API error:', JSON.stringify(data));
-      throw new Error(data.error?.message || 'Gemini API 오류');
-    }
-
-    const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!analysis) throw new Error('분석 결과를 가져올 수 없습니다.');
 
     return {
       statusCode: 200,
       headers: HEADERS,
-      body: JSON.stringify({ analysis }),
+      body: JSON.stringify({ analysis: message.content[0].text }),
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Anthropic API error:', error);
     return {
       statusCode: 500,
       headers: HEADERS,
